@@ -32,6 +32,12 @@ module "aws_route53_record" {
   count = length(var.domain-name)
 }
 
+resource "aws_instance" "instance-type"{
+for_each = var.instance-type  
+ami = "ami-0aa2b7722dc1b5612"
+key_name = "Devinis"
+instance_type = each.value
+}
 resource "aws_instance" "mongodb-client" {
 
 }
