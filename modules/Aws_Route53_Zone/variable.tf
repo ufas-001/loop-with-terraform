@@ -1,0 +1,3 @@
+variable "dormain-name" {
+  
+}

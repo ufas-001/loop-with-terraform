@@ -1,36 +1,3 @@
-
-/* resource "aws_elb" "main" {
-  name               = "foobar-terraform-elb"
-  availability_zones = ["us-east-1c"]
-
-  listener {
-    instance_port     = 80
-    instance_protocol = "http"
-    lb_port           = 80
-    lb_protocol       = "http"
-  }
-} */
-
-/* resource "aws_route53_zone" "example" {
-  name = var.domain-name[count.index]
-  count = length(var.domain-name)
-} */
-
-/* resource "aws_route53_record" "www" {
-  zone_id = aws_route53_zone.example[count.index].zone_id
-  name    = aws_route53_zone.example[count.index].name
-  type    = "A"
-
-  alias {
-    name                   = aws_elb.main.dns_name
-    zone_id                = aws_elb.main.zone_id
-    evaluate_target_health = true
-  }
-
-  count = length(var.domain-name)
-} */
-
-
 terraform {
   required_providers {
     aws = {
@@ -45,11 +12,26 @@ provider "aws" {
   region = "us-east-1"
 }
 
-resource "aws_instance" "mongodb-client" {
-    ami = "ami-0889a44b331db0194"
 
+module "aws_elb" {
+    source = "./modules/Aws_elb"
 }
 
-resource "aws_instance" "name" {
-  
+module "aws_route53_zone" {
+  source = "./modules/Aws_Route53_Zone"
+  dormain-name = var.domain-name
+}
+
+
+module "aws_route53_record" {
+  source = "./modules/Aws_Route53_Record"
+  zone_id = module.aws_route53_zone[count.index].zone_id
+  name = module.aws_route53_zone[count.index].name
+  aws_elb_zone_id = module.aws_elb.zone_id
+  alias_name = module.aws_elb.dns_name
+  count = length(var.domain-name)
+}
+
+resource "aws_instance" "mongodb-client" {
+
 }
