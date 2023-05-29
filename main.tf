@@ -20,6 +20,7 @@ module "aws_elb" {
 module "aws_route53_zone" {
   source = "./modules/Aws_Route53_Zone"
   dormain-name = var.domain-name
+  count = length(var.domain-name)
 }
 
 
@@ -33,11 +34,13 @@ module "aws_route53_record" {
 }
 
 resource "aws_instance" "instance-type"{
-for_each = var.instance-type  
+for_each = toset(var.instance_type)
 ami = "ami-0aa2b7722dc1b5612"
 key_name = "Devinis"
 instance_type = each.value
 }
+
+
 resource "aws_instance" "mongodb-client" {
 
 }

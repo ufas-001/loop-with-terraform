@@ -9,3 +9,11 @@ resource "aws_elb" "main" {
     lb_protocol       = "http"
   }
 }
+
+output "zone_id" {
+  value = aws_elb.main.zone_id
+}
+
+output "dns_name" {
+  value = aws_elb.main.dns_name
+}
