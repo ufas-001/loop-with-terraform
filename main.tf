@@ -44,3 +44,4 @@ instance_type = each.value
 resource "aws_instance" "mongodb-client" {
 
 }
+ 
